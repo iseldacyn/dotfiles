@@ -2,16 +2,18 @@ Config {
 
 	-- appearance
 	  font			= "Mono 12"
-	, bgColor		= "#260d36"
+	--, bgColor		= "#260d36"
+	, bgColor		= "#000000"
 	, fgColor		= "#ffffff"
 	, position		= TopH 20
 	, border		= BottomB
-	, borderColor	= "#245d16"
+	--, borderColor	= "#245d16"
+	, borderColor	= "#000000"
 
 	-- layout
 	, sepChar 		= "%"
 	, alignSep		= "}{"
-	, template 		= "%StdinReader% | %k10temp% | %memory% }{ %wlan0wi% | %battery% | %date% "
+	, template 		= "%StdinReader% | %k10temp% | %memory% }{ %wlo1wi% | %battery% | %date% "
 
 	-- general behavior
 	, lowerOnStart	= False
@@ -40,7 +42,7 @@ Config {
 							, "--high"		, "red"
 							] 100
 
-		, Run Wireless "wlan0"	[ "-t", "WiFi:<fc=#81de9a><essid></fc>:<fc=#f23847><qualitybar></fc>"
+		, Run Wireless "wlo1"	[ "-t", "WiFi:<fc=#81de9a><essid></fc>:<fc=#f23847><qualitybar></fc>"
 								, "--Low"	, "20"	--units: %
 								, "--High"	, "70"	--units: %
 								, "--low"	, "red"
@@ -56,9 +58,9 @@ Config {
 							, "--normal"	, "orange"
 							, "--high"		, "green"
 							, "--"
-								, "-o"		, "Batt:<left>% (<timeleft>)"
+								, "-o"		, "Battery:<left>% (<timeleft>)"
 								, "-O"		, "<fc=#fdfd96>Batt:<left>% (<timeleft>)</fc>"
-								, "-a"		, "dunstify -i /home/iselda/Pictures/low-battery.png -r 2595 -u critical 'LOW BATTERY: Please plug in charger!'"
+								, "-a"		, "dunstify -i /home/iselda/Pictures/volume/low-battery.png -r 2595 -u critical 'LOW BATTERY: Please plug in charger!'"
 								, "-A"		, "20"
 							] 100
 

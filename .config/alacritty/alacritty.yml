@@ -21,7 +21,7 @@ env:
   # each instance of Alacritty. If it is not present, alacritty will
   # check the local terminfo database and use `alacritty` if it is
   # available, otherwise `xterm-256color` is used.
-  TERM: alacritty
+  TERM: xterm-256color
 
 window:
   # Window dimensions (changes require restart)
@@ -68,7 +68,7 @@ window:
   #
   # Window opacity as a floating point number from `0.0` to `1.0`.
   # The value `0.0` is completely transparent and `1.0` is opaque.
-  opacity: 0.85
+  opacity: 1.0
 
   # Startup Mode (changes require restart)
   #
@@ -199,9 +199,9 @@ font:
 # Colors (Tomorrow Night)
 colors:
   # Default colors
-  #primary:
-  #  background: '#2E3440'
-  #  foreground: '#1A1C1E'
+  primary:
+    background: '#ABCDEF'
+    foreground: '#ABCDEF'
 
     # Bright and dim foreground colors
     #
@@ -209,8 +209,8 @@ colors:
     # present. If the bright foreground color is not set, or
     # `draw_bold_text_with_bright_colors` is `false`, the normal foreground
     # color will be used.
-    #dim_foreground: '#828482'
-    #bright_foreground: '#eaeaea'
+    #dim_foreground: '#FFFFFF'
+    #bright_foreground: '#FFFFFF'
 
   # Cursor colors
   #
@@ -294,7 +294,7 @@ colors:
 
   # Normal colors
   normal:
-    black:   '#3B4252'
+    black:   '#FFFFFF'
     red:     '#BF616A'
     green:   '#A3BE8C'
     yellow:  '#EBCB8B'
@@ -305,7 +305,7 @@ colors:
 
   # Bright colors
   bright:
-    black:   '#4C566A'
+    black:   '#FFFFFF'
     red:     '#BF616A'
     green:   '#A3BE8C'
     yellow:  '#EBCB8B'
@@ -318,8 +318,8 @@ colors:
   #
   # If the dim colors are not set, they will be calculated automatically based
   # on the `normal` colors.
-  #dim:
-  #  black:   '#131415'
+  dim:
+    black:   '#FFFFFF'
   #  red:     '#864343'
   #  green:   '#777c44'
   #  yellow:  '#9e824c'

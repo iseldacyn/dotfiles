@@ -9,7 +9,5 @@ if [ -e $HOME/.bash_aliases ]; then
 	source $HOME/.bash_aliases
 fi
 
-alias ls='ls --color=auto'
-
 PS1="[\u@\h \W]$ "
 export PS1="\[\e[1;32m\][\[\e[1;35m\]\u\[\e[0;36m\]@\[\e[1;35m\]\h \[\e[1;36m\]\W\[\e[1;32m\]]\[\e[0;32m\]\$\[\e[m\] " 
