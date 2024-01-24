@@ -1,9 +1,12 @@
 [colors.primary]
+# background = "#2E3440"
+# foreground = "#1A1C1E"
 background = "#000000"
 foreground = "#FFFFFF"
 
 [colors.bright]
-black = "#FFFFFF"
+# black = "#4C566A"
+black = "#000000"
 blue = "#81A1C1"
 cyan = "#8FBCBB"
 green = "#A3BE8C"
@@ -13,7 +16,8 @@ white = "#ECEFF4"
 yellow = "#EBCB8B"
 
 [colors.normal]
-black = "#FFFFFF"
+# black = "#3B4252"
+black = "#000000"
 blue = "#81A1C1"
 cyan = "#88C0D0"
 green = "#A3BE8C"
@@ -37,7 +41,8 @@ history = 5000
 
 [window]
 dynamic_padding = false
-opacity = 1.0
+# opacity = 0.85
+opacity = 0.0
 title = "Alacritty"
 
 [window.padding]
