@@ -19,6 +19,7 @@ import qualified Data.Map as M
 
 -- Terminal program
 myTerminal = "alacritty"
+retroTerm = "cool-retro-term --profile iselda"
 
 -- Mod button (super)
 myModMask = mod4Mask
@@ -38,20 +39,24 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 		, ((0, xF86XK_MonBrightnessDown), spawn "lux -s 10%")
 
 		-- Volume Control
-		, ((0, xF86XK_AudioMute), spawn "/home/iselda/.volume.sh mute")
 		, ((0, xF86XK_AudioLowerVolume), spawn "/home/iselda/.volume.sh down")
 		, ((0, xF86XK_AudioRaiseVolume), spawn  "/home/iselda/.volume.sh up")
+		, ((0, xF86XK_AudioMute), spawn "/home/iselda/.volume.sh mute")
 
 		-- Microphone Control
 		, ((0, xF86XK_AudioMicMute), spawn "/home/iselda/.volume.sh mic_mute")
 
 		-- PrintScreen
-		, ((0, xK_Print), spawn "scrot -e xclip -selection clipboard -t image/png -i $f; rm *.ong")
+		, ((0, xK_Print), spawn "scrot -e 'xclip -selection clipboard -t image/png -i $f'; rm *.png")
 
 		-- Restart & recompile xmonad
 		, ((modm, xK_q), spawn "xmonad --recompile; xmonad --restart")
 
+		-- Lock screen
+		, ((modm .|. shiftMask, xK_l), spawn "i3lock -c 000000")
+
 		-- Start new terminal
+		--, ((modm, xK_Return), spawn retroTerm)
 		, ((modm .|. shiftMask, xK_Return), spawn myTerminal)
 
 		-- Rotate through layouts
@@ -63,8 +68,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 		-- Resize windows to correct size
 		, ((modm, xK_n), refresh)
 
-		-- Move to net window
-		, ((modm, xK_Tab), windows W.focusDown)
+		-- Move to next window
 		, ((modm, xK_j), windows W.focusDown)
 
 		-- Move to previous window
@@ -72,15 +76,15 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
 		-- Move to master window
 		, ((modm, xK_m), windows W.focusMaster)
-
-		-- Swap focused and master window
-		, ((modm, xK_Return), windows W.swapMaster)
 		
 		-- Swap focused and next window
 		, ((modm .|. shiftMask, xK_j), windows W.swapDown)
 
 		-- Swap focused and previous window
 		, ((modm .|. shiftMask, xK_k), windows W.swapUp)
+
+		-- Swap focused and master window
+		, ((modm .|. shiftMask, xK_m), windows W.swapMaster)
 
 		-- Close current window
 		, ((modm .|. shiftMask, xK_c), kill)
@@ -130,19 +134,19 @@ toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
 
 -- Sets spacing between windows
 mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
-mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
+mySpacing i = spacingRaw True (Border i i i i) True (Border i i i i) True
 
 -- Layout of tiles
-myLayoutHook = tiledSpacing ||| tiled ||| fullscreen
-			where tiledSpacing = mySpacing 6 $ Tall 1 (3/100) (1/2);
-				  tiled = Tall 1 (3/100) (1/2);
-				  fullscreen = smartBorders $ Full
+myLayoutHook = tiledSpacing ||| fullscreen ||| tiledBorderless
+			where tiledSpacing = {- mySpacing 6 $ -} smartBorders $ Tall 1 (3/100) (1/2);
+				  fullscreen = smartBorders $ Full;
+				  tiledBorderless = noBorders $ Tall 1 (3/100) (1/2)
 
 -- Event handling
 myEventHook = mempty
 
 -- Status Bars and logging
-myLogHook = fadeInactiveLogHook 0.50
+myLogHook = fadeInactiveLogHook 1.0
 
 -- Startup Hook
 myStartupHook = return () 
