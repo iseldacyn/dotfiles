@@ -18,7 +18,7 @@ import qualified XMonad.StackSet as W
 import qualified Data.Map as M
 
 -- Terminal program
-myTerminal = "alacritty"
+myTerminal = "kitty"
 retroTerm = "cool-retro-term --profile iselda"
 
 -- Mod button (super)
@@ -47,13 +47,13 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 		, ((0, xF86XK_AudioMicMute), spawn "/home/iselda/.volume.sh mic_mute")
 
 		-- PrintScreen
-		, ((0, xK_Print), spawn "scrot -e 'xclip -selection clipboard -t image/png -i $f'; rm *.png")
+		, ((0, xK_Print), spawn "maim -s | xclip -selection clipboard -t image/png")
 
 		-- Restart & recompile xmonad
 		, ((modm, xK_q), spawn "xmonad --recompile; xmonad --restart")
 
 		-- Lock screen
-		, ((modm .|. shiftMask, xK_l), spawn "i3lock -c 000000")
+		, ((modm .|. shiftMask, xK_l), spawn "i3lock -S 0 -c 000000 -k --time-color=ffffff --date-color=999999 --ring-color=d3b3ff --keyhl-color=f5f67e --bshl-color=e1ffc7  --insidever-color=ffc7ef --ringver-color=ffc7ef --insidewrong-color=ff9690 --ringwrong-color=ff9690 --indicator -e -f")
 
 		-- Start new terminal
 		--, ((modm, xK_Return), spawn retroTerm)
@@ -119,6 +119,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 			| (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
 			, (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
 
+-- Do not focus using the mouse
+
 -- XMobar Configuration
 myBar = "xmobar"
 myPP  = xmobarPP
@@ -143,7 +145,7 @@ myLayoutHook = tiledSpacing ||| fullscreen ||| tiledBorderless
 				  tiledBorderless = noBorders $ Tall 1 (3/100) (1/2)
 
 -- Event handling
-myEventHook = mempty
+myEventHook =  mempty
 
 -- Status Bars and logging
 myLogHook = fadeInactiveLogHook 1.0
@@ -165,5 +167,7 @@ defaults = def
 	, layoutHook			= myLayoutHook
 	, handleEventHook		= myEventHook
 	, logHook 				= myLogHook
-	, startupHook			= myStartupHook
+	, startupHook	 		= myStartupHook
+	, focusFollowsMouse = False
+	, clickJustFocuses = False
 	}
