@@ -1,11 +1,11 @@
 Config {
 
 	-- appearance
-	  font			= "Mono 12"
+	  font			= "Maple Mono"
 	--, bgColor		= "#260d36"
 	, bgColor		= "#000000"
 	, fgColor		= "#ffffff"
-	, position		= TopH 20
+	, position		= TopH 30
 	, border		= BottomB
 	--, borderColor	= "#245d16"
 	, borderColor	= "#000000"
@@ -49,7 +49,7 @@ Config {
 								, "--normal", "orange"
 								, "--high"	, "green"
 								] 50
-		
+
 		, Run BatteryP 		["BATT"] 
 							[ "--template"	, "<acstatus>"
 							, "--Low"		, "20"		-- units: %

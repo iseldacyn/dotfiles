@@ -32,13 +32,13 @@ function send_notification {
 	bar=$(seq -s "-" $(($volume / 5)) | sed 's/[0-9]//g')
 	bar+="-"
 	if [ "$volume" -ge 70 ] ; then
-		dunstify -i /home/iselda/Pictures/full-audio.png -t 3000 -r 2593 -u normal "    $bar  $volume"
+		dunstify -i /home/iselda/Pictures/volume/full-audio.png -t 3000 -r 2593 -u normal "    $bar  $volume"
 	elif [ "$volume" -ge 40 ] ; then
-		dunstify -i /home/iselda/Pictures/med-audio.png -t 3000 -r 2593 -u normal "    $bar  $volume"
+		dunstify -i /home/iselda/Pictures/volume/med-audio.png -t 3000 -r 2593 -u normal "    $bar  $volume"
 	elif [ "$volume" -gt 0 ] ; then
-		dunstify -i /home/iselda/Pictures/low-audio.png -t 3000 -r 2593 -u normal "    $bar  $volume"
+		dunstify -i /home/iselda/Pictures/volume/low-audio.png -t 3000 -r 2593 -u normal "    $bar  $volume"
 	else
-		dunstify -i /home/iselda/Pictures/no-audio.png -t 3000 -r 2593 -u normal "      $volume"
+		dunstify -i /home/iselda/Pictures/volume/no-audio.png -t 3000 -r 2593 -u normal "      $volume"
 	fi
 }
 
@@ -59,15 +59,16 @@ case $1 in
 		;;
 		
 	down)
-		# unmute if muted
-		if [ $(is_mute) = "yes" ] ; then
-			pactl set-sink-mute @DEFAULT_SINK@ off
 		# lower volume, display
+		pactl set-sink-volume @DEFAULT_SINK@ -5%
+		# if muted, use muted icon
+		if [ $(is_mute) = "yes" ] && [ "$(get_volume)" -gt 0 ] ; then
+			dunstify -i /home/iselda/Pictures/volume/mute-audio.png -t 3000 -r 2593 -u normal "    -$(seq -s "-" $(($(get_volume) / 5)) | sed 's/[0-9]//g')  $(get_volume)"
+		elif [ $(is_mute) = "yes" ] && [ "$(get_volume)" -eq 0 ] ; then
+			dunstify -i /home/iselda/Pictures/volume/mute-audio.png -t 3000 -r 2593 -u normal "      $(get_volume)"
 		else
-			echo "test"
-			pactl set-sink-volume @DEFAULT_SINK@ -5%
+			send_notification
 		fi
-		send_notification
 		;;
 		
 	mute)
@@ -78,7 +79,7 @@ case $1 in
 			send_notification
 		# show audio muted icon
 		else
-			dunstify -i /home/iselda/Pictures/mute-audio.png -t 3000 -r 2593 -u normal ""
+			dunstify -i /home/iselda/Pictures/volume/mute-audio.png -t 3000 -r 2593 -u normal ""
 		fi
 		;;
 
@@ -87,10 +88,10 @@ case $1 in
 		pactl set-source-mute @DEFAULT_SOURCE@ toggle
 		# if unmuted, show microphone on icon
 		if [ -z $(mic_is_mute) ] ; then
-			dunstify -i /home/iselda/Pictures/play-mic.png -t 3000 -r 2594 -u normal ""
+			dunstify -i /home/iselda/Pictures/volume/play-mic.png -t 3000 -r 2594 -u normal ""
 		# show microphone muted icon
 		else
-			dunstify -i /home/iselda/Pictures/mute-mic.png -t 3000 -r 2594 -u normal ""
+			dunstify -i /home/iselda/Pictures/volume/mute-mic.png -t 3000 -r 2594 -u normal ""
 		fi
 		;;
 esac

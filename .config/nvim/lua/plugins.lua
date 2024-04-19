@@ -65,6 +65,11 @@ return packer.startup(function(use)
 	use("haystackandroid/strawberry")
 	use("romainl/vim-dichromatic")
 	use("xxiaie/dichromatic-like")
+	use("miikanissi/modus-themes.nvim")
+	use("bratpeki/truedark-vim")
+
+	-- tex
+	use("lervag/vimtex")
 
 	if PACKER_BOOTSTRAP then
 		require("packer").sync()
