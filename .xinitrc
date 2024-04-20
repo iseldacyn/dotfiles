@@ -38,5 +38,6 @@ nitrogen --restore &
 xcompmgr -c &
 xss-lock --transfer-sleep-lock -- i3lock -S 0 -c 000000 -k --time-color=ffffff --date-color=999999 --ring-color=d3b3ff --keyhl-color=f5f67e --bshl-color=e1ffc7  --insidever-color=ffc7ef --ringver-color=ffc7ef --insidewrong-color=ff9690 --ringwrong-color=ff9690 --indicator -e -f --nofork &
 oneko -sakura &
+/home/iselda/.bat_notif_daemon
 xmonad --recompile &
 exec xmonad
