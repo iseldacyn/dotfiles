@@ -26,3 +26,7 @@ Taken inspiration from ThePrimagen (from YouTube) neovim setup and added some fe
 ### xmonad/xmobar
 
 I mainly took default configuration files and tweaked them around for what I wanted for my WM / status bar
+
+### tmux
+
+Took inspiration from bindings from Dreams of Code (from YouTube).
