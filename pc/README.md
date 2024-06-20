@@ -2,10 +2,11 @@
 
 Currently has:
 - tree-based tiling
-- xmobar only on one screen
+- xmobar on BOTH screens
 - bemenu support
 - updated active workspaces
 - gaps on screen + background
+TODO: Update WS to assign it to a screen, move screen focus with mouse but NOT window focus
 
 ### scripts
 

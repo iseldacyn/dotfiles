@@ -1,0 +1,40 @@
+Config {
+
+	-- appearance
+	  font			= "Maple Mono"
+	--, bgColor		= "#260d36"
+	, bgColor		= "#000000"
+	, fgColor		= "#ffffff"
+	, position		= TopH 30
+	, border		= BottomB
+	--, borderColor	= "#245d16"
+	, borderColor	= "#000000"
+
+	-- layout
+	, sepChar 		= "%"
+	, alignSep		= "}{"
+	, template 		= "%StdinReader% | %memory% }{ %date% "
+
+	-- general behavior
+	, lowerOnStart	= False
+	, hideOnStart	= False
+	, allDesktops	= True
+	, persistent	= True
+
+	--plugins
+	, commands =
+		[ Run StdinReader
+
+		, Run Memory		[ "-t"			, "Memory:<used>Mb"
+							, "--Low"		, "6400"
+							, "--High"		, "11200"
+							, "--low"		, "lightgreen"
+							, "--normal"	, "orange"
+							, "--high"		, "red"
+							] 100
+
+		, Run Date			"%F (%a) %T" "date" 10
+
+		]
+}
+
