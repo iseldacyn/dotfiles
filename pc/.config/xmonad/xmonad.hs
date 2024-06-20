@@ -120,14 +120,14 @@ myPP xbar0 xbar1 = xmobarPP
 
 -- Sets spacing between windows
 mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
-mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
+mySpacing i = spacingRaw True (Border i i i i) True (Border i i i i) True
 
 -- Layout of tiles
 myLayoutHook = avoidStruts $
                reflectHoriz $
                reflectVert $
                bspSpacing ||| fullscreen
-			where bspSpacing = mySpacing 5 $  emptyBSP {-Tall 1 (3/100) (1/2)-};
+			where bspSpacing = mySpacing 5 $ smartBorders $ emptyBSP {-Tall 1 (3/100) (1/2)-};
 				  fullscreen = noBorders $ Full;
 
 -- Event handling
@@ -139,13 +139,13 @@ myLogHook xbar0 xbar1 = do
     fadeInactiveLogHook 1.0
 
 -- Startup Hook
-myStartupHook = return ()
+myStartupHook = return()
 
 main::IO()
 main = do
 	xmproc0 <- spawnPipe "xmobar -x 0 $HOME/.config/xmonad/xmobarrc"
 	xmproc1 <- spawnPipe "xmobar -x 1 $HOME/.config/xmonad/xmobarrc"
-	xmonad $ ewmh . docks $ defaults xmproc0 xmproc1
+	xmonad $ ewmhFullscreen . ewmh . docks $ defaults xmproc0 xmproc1
 
 defaults xbar0 xbar1 = def
 	{ terminal 				= myTerminal
