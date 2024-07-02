@@ -1,0 +1,50 @@
+Config {
+
+	-- appearance
+	  font			= "Maple Mono"
+	--, bgColor		= "#260d36"
+	, bgColor		= "#000000"
+	, fgColor		= "#ffffff"
+	, position		= TopH 30
+	, border		= BottomB
+	--, borderColor	= "#245d16"
+	, borderColor	= "#000000"
+
+	-- layout
+	, sepChar 		= "%"
+	, alignSep		= "}{"
+	, template 		= "%_XMONAD_LOG_0% | %coretemp% | %memory% }{ %volume% | %date% "
+
+	-- general behavior
+	, lowerOnStart	= False
+	, hideOnStart	= False
+	, allDesktops	= True
+	, persistent	= True
+
+	--plugins
+	, commands =
+		[ Run XPropertyLog "_XMONAD_LOG_0"
+
+        , Run CoreTemp      [ "-t"      , "Temp: <core0>°C"
+							, "-L"		, "60"
+							, "-H"		, "80"
+							, "-l"		, "lightgreen"
+							, "-n"	    , "orange"
+							, "-h"		, "red"
+                            ] 100
+
+		, Run Memory		[ "-t"		, "Memory:<used>Mb"
+							, "-L"		, "13000"
+							, "-H"		, "25000"
+							, "-l"		, "lightgreen"
+							, "-n"	    , "orange"
+							, "-h"		, "red"
+							] 100
+
+        , Run Com "/bin/bash" ["-c", "~/.config/xmonad/scripts/volume.sh"] "volume" 10
+
+		, Run Date			"%F (%a) %T" "date" 10
+
+		]
+}
+

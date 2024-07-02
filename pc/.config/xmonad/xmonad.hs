@@ -1,40 +1,51 @@
+-- XMonad functions
 import XMonad
 import XMonad.Util.Run
-import XMonad.Hooks.DynamicLog
-import XMonad.Hooks.EwmhDesktops
-import XMonad.Hooks.ManageDocks
-import XMonad.Hooks.FadeInactive
-import XMonad.Hooks.FadeWindows
-import XMonad.Layout.Spacing
 import XMonad.Util.EZConfig
-import XMonad.Actions.NoBorders
+import qualified XMonad.StackSet as W
+
+-- Status bars
+import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.StatusBar
+import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.DynamicIcons
+
+-- Layout
+import XMonad.Layout.Spacing
 import XMonad.Layout.NoBorders
-import XMonad.Layout.LayoutModifier
+import XMonad.Layout.LayoutModifier as L
+import XMonad.Layout.Reflect
 import XMonad.Actions.Navigation2D
 import XMonad.Layout.BinarySpacePartition
-import XMonad.Layout.Reflect
+import XMonad.Hooks.EwmhDesktops
 
+-- Mutiple screens
+import XMonad.Actions.DynamicWorkspaces
+import XMonad.Layout.IndependentScreens
+import XMonad.Actions.OnScreen
+import XMonad.Actions.Warp
+
+-- General
 import Data.Monoid
-import Control.Monad
+import Control.Monad (liftM2)
 import System.Exit
 import Graphics.X11.ExtraTypes.XF86
-
-import qualified XMonad.StackSet as W
 import qualified Data.Map as M
 
 -- Terminal program
+myTerminal, retroTerm :: String
 myTerminal = "kitty"
 retroTerm = "cool-retro-term --profile iselda"
 
--- Mod button (super)
-myModMask = mod4Mask
-
 -- Border size and color
+myBorderWidth :: Dimension
 myBorderWidth = 3
+myNormalBorderColor, myFocusedBorderColor :: String
 myNormalBorderColor = "#4f4f4f"
 myFocusedBorderColor = "#fdfd96"
 
 -- KeyBinds
+myKeys :: XConfig l -> M.Map (KeyMask, KeySym) (X ())
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 		--Launch bemenu
 		[ ((modm, xK_p), spawn "bemenu")
@@ -51,9 +62,6 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
 		-- Rotate through layouts
 		, ((modm, xK_space), sendMessage NextLayout)
-
-		-- Reset layouts to default
-		, ((modm .|. shiftMask, xK_space), setLayout $ XMonad.layoutHook conf)
 
 		-- Move between windows with hjkl
         , ((modm, xK_h), windowGo L False)
@@ -80,36 +88,50 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 		, ((modm .|. shiftMask, xK_c), kill)
 
         -- Toggle window to be floating
-        , ((modm, xK_f), withFocused toggleFloat )
+        , ((modm, xK_f), withFocused toggleFloat)
+
+        -- Bgone
+        , ((modm, xK_b), banishScreen LowerRight)
 
 		]
 		++
 
 		-- Switch to workspace N
 		-- Move client to workspace N
-		[((m .|. modm, k), windows $ f i)
-			| (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
+		[((m .|. modm, k), windows $ onCurrentScreen f i)
+			| (i, k) <- zip (workspaces' conf) [xK_1 .. xK_9]
 			, (f, m) <- [(W.view, 0), (liftM2 (.) W.view W.shift, shiftMask)]]
 		++
 
 		-- Switch to screen N
 		-- Move client to screen N
-		[((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
+		[((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f) >> warpToScreen sc (0.5) (0.5))
 			| (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
-			, (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
+			, (f, m) <- [(W.view, 0), (liftM2 (.) W.view W.shift, shiftMask)]]
 
             where toggleFloat w = windows (\s -> if M.member w (W.floating s)
                                   then W.sink w s
                                   else (W.float w (W.RationalRect (1/3) (1/4) (1/2) (4/5)) s))
 
--- Do not focus using the mouse
+-- App Icons
+myIcons :: Query [String]
+myIcons = composeAll
+  [ className =? "discord" --> appIcon "\xfb6e"
+  , className =? "Discord" --> appIcon "\xf268"
+  , className =? "firefox" --> appIcon "\63288"
+  ]
+
+-- Spawn status bars
+barSpawner :: ScreenId -> IO StatusBarConfig
+barSpawner (S s) = do
+        pure $ statusBarPropTo ("_XMONAD_LOG_" ++ show s)
+            ("xmobar -x " ++ show s ++ " ~/.config/xmonad/xmobarrc" ++ show s)
+            (pureiconsPP myIcons $ myPP (S s))
 
 -- XMobar Configuration
-myBar = "xmobar"
-myPP xbar0 xbar1 = xmobarPP
-		{ ppOutput	= \x -> hPutStrLn xbar0 x                 -- monitor 1
-                         >> hPutStrLn xbar1 x                 -- monitor 2
-		, ppCurrent	= xmobarColor "#fcfc5d" "" . wrap "<" ">"	--current workspace
+myPP :: {-ScreenId ->-} PP
+myPP s = marshallPP s $ = def
+		{ ppCurrent	= xmobarColor "#fcfc5d" "" . wrap "<" ">"	--current workspace
 		, ppVisible	= xmobarColor "#d1d138" "" . wrap "(" ")"	--visible workspaces
 		, ppHidden	= xmobarColor "#adac44" "" . wrap "*" ""	--hidden workspaces
 		, ppHiddenNoWindows = xmobarColor "#6d4d80" ""			--hidden, no windows
@@ -119,10 +141,10 @@ myPP xbar0 xbar1 = xmobarPP
 		}
 
 -- Sets spacing between windows
-mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
-mySpacing i = spacingRaw True (Border i i i i) True (Border i i i i) True
+mySpacing :: Integer -> l a -> L.ModifiedLayout Spacing l a
+mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
 
--- Layout of tiles
+-- Binary Tree Partiton + Full Screen layouts
 myLayoutHook = avoidStruts $
                reflectHoriz $
                reflectVert $
@@ -130,34 +152,41 @@ myLayoutHook = avoidStruts $
 			where bspSpacing = mySpacing 5 $ smartBorders $ emptyBSP {-Tall 1 (3/100) (1/2)-};
 				  fullscreen = noBorders $ Full;
 
+-- Navigation with spacing
+myNavigation2DConfig = def { defaultTiledNavigation    = sideNavigation }
+
 -- Event handling
-myEventHook =  mempty
+myEventHook :: Event -> X All
+myEventHook = mempty
 
 -- Status Bars and logging
-myLogHook xbar0 xbar1 = do
-    dynamicLogWithPP $ myPP xbar0 xbar1
-    fadeInactiveLogHook 1.0
+myLogHook = return()
 
 -- Startup Hook
+myStartupHook :: X()
 myStartupHook = return()
 
-main::IO()
+main :: IO()
 main = do
-	xmproc0 <- spawnPipe "xmobar -x 0 $HOME/.config/xmonad/xmobarrc"
-	xmproc1 <- spawnPipe "xmobar -x 1 $HOME/.config/xmonad/xmobarrc"
-	xmonad $ ewmhFullscreen . ewmh . docks $ defaults xmproc0 xmproc1
-
-defaults xbar0 xbar1 = def
-	{ terminal 				= myTerminal
-	, borderWidth			= myBorderWidth
-	, modMask				= myModMask
-	, focusedBorderColor	= myFocusedBorderColor
-    , normalBorderColor     = myNormalBorderColor
-	, keys					= myKeys
-	, layoutHook			= myLayoutHook
-	, handleEventHook		= myEventHook
-	, logHook 				= myLogHook xbar0 xbar1
-	, startupHook	 		= myStartupHook
-	, focusFollowsMouse = False
-	, clickJustFocuses = False
-	}
+    nScreens <- countScreens
+    xmonad
+        . ewmhFullscreen
+        . ewmh
+        . withNavigation2DConfig myNavigation2DConfig
+        . dynamicSBs barSpawner
+        . docks
+        $  def
+            { terminal 				= myTerminal
+            , workspaces            = withScreens nScreens $ map show [1..9]
+            , borderWidth			= myBorderWidth
+            , modMask				= mod4Mask
+            , focusedBorderColor	= myFocusedBorderColor
+            , normalBorderColor     = myNormalBorderColor
+            , keys					= myKeys
+            , layoutHook			= myLayoutHook
+            , handleEventHook		= myEventHook
+            , logHook               = myLogHook
+            , startupHook	 		= myStartupHook
+            , focusFollowsMouse     = False
+            , clickJustFocuses      = False
+            }
