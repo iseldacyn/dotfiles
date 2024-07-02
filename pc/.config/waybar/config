@@ -50,7 +50,7 @@
         "critical-threshold": 80
     },
     "memory": {
-        "format": "RAM: {used:0.1f} Gb",
+        "format": "RAM: {used:0.1f}/{total:0.1f} Gb",
     },
     "tray": {
         "icon-size": 20
