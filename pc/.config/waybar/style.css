@@ -1,0 +1,85 @@
+* {
+    border:         none;
+    border-radius:  0;
+    font-family:    Maple Mono;
+    font-size:      17px;
+    box-shadow:     none;
+    text-shadow:    none;
+    transition-duration: 0s;
+}
+
+window {
+    color:      rgba(217, 216, 216, 1);
+    background: rgba(35, 31, 32, 0.40);
+}
+
+window#waybar.solo {
+    color:      rgba(217, 216, 216, 1);
+    background: rgba(35, 31, 32, 0.40);
+}
+
+#workspaces {
+    margin: 0 5px;
+}
+
+#workspaces button {
+    padding:    0 5px;
+    color:      rgba(139, 63, 252, 0.8);
+}
+
+#workspaces button.visible {
+    color: rgba(245, 216, 122, 1);
+}
+
+#workspaces button.active {
+    border-bottom: 2px solid rgba(245, 216, 122, 1);
+}
+
+#workspaces button.urgent {
+    color: rgba(255, 51, 78, 0.4);
+}
+
+#workspaces button:hover {
+    background:     rgba(35, 31, 32, 0.00);
+    border:         none;
+    border-radius:  0;
+    border-bottom:  2px solid rgba(139, 63, 252, 1);
+    color:          rgba(139, 63, 252, 1);
+}
+
+#memory, #network, #pulseaudio, #temperature, #custom-power {
+    margin:     0px 15px 0px 15px;
+    min-width:  25px;
+}
+
+#pulseaudio {
+    color: green;
+}
+
+#network {
+    color: darkorange;
+}
+
+#temperature {
+    color: deepskyblue;
+}
+
+#memory {
+    color: salmon;
+}
+
+#clock {
+    color: darkorchid;
+    margin:     0px 16px 0px 10px;
+    min-width:  140px;
+}
+
+#tray menu {
+    color:      white;
+    background: rgba(35, 31, 32, 0.40);
+}
+
+menu {
+    color:      white;
+    background: rgba(35, 31, 32, 0.40);
+}

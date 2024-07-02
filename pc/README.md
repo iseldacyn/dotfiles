@@ -6,17 +6,20 @@ Currently has:
 - bemenu support
 - updated active workspaces
 - gaps on screen + background
-TODO: Update WS to assign it to a screen, move screen focus with mouse but NOT window focus
+
+UPDATE: Nvidia drivers have been updated for wayland, so I now run Hyprland as my main WM.
 
 ### scripts
 
 Bemenu configuration and other scripts to make things run on Wayland.
 
-### Hyprland
+### Hyprland/waybar
 
-Doesn't work currently. I used a pre-configured waybar setup, and tried to implement my own binary clock hyprlock (to some avail).
-Main issues are compatibility with my Nvidia drivers. I'm not sure if I'll go back to fix that or not if I ever get a new GPU.
-I'm currently liking my XMonad setup and am unsure if I will want to switch back.
+Nvidia drivers have been updated! I have finally configured my waybar to my liking.
+Current bugs in my system:
+- Hypridle breaks my system???
+- Hyprlock needs to be configured further
+- With ^, my binary clock scripts needs to be updated to run better as well
 
 ### xinit
 
