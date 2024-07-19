@@ -1,12 +1,12 @@
 {
     "layer": "bottom",
-    "position": "top",
-    "height": 30,
+    "position": "bottom",
+    "height": 44,
 
-    "modules-left": ["hyprland/workspaces", "hyprland/submap", "temperature", "memory"],
-    "modules-center": ["hyprland/window"],
-    "modules-right": ["tray", "pulseaudio", "network", "clock", "custom/power"],
-    "sway/mode": {
+    "modules-left": ["custom/power", "custom/search", "hyprland/window", "hyprland/submap"],
+    "modules-center": ["hyprland/workspaces"],
+    "modules-right": ["temperature", "memory", "custom/volume", "network", "clock", "tray"],
+    "hyprland/submode": {
         "format": " {}"
     },
     "hyprland/workspaces": {
@@ -14,7 +14,7 @@
         "disable-scroll": true
     },
     "hyprland/window": {
-        "separate-outputs": true,
+        "separate-outputs": false,
         "max-length": 80,
         "tooltip": false,
         "icon": true,
@@ -49,16 +49,16 @@
     "network": {
         "format": "{icon} {essid}",
         "format-icons": {
-            "wifi": ["", "" ,""],
-            "ethernet": [""],
-            "disconnected": [""]
+            "wifi": ["󰤟", "󰤢", "󰤨"],
+            "ethernet": ["󰈀"],
+            "disconnected": ["󰤯"]
         },
         "on-click": "kitty nmtui",
         "tooltip": false
     },
     "pulseaudio": {
         "format": "{icon} {volume:2}%",
-        "format-muted": "X",
+        "format-muted": "",
         "format-icons": {
             "default": ["", ""]
         },
@@ -86,8 +86,26 @@
             "shutdown": "shutdown -P now",
             "reboot": "shutdown -r now",
             "sleep": "systemctl suspend",
-            "lock": "loginctl lock-session",
+            "logout": "pkill Hyprland",
             "cancel": "echo 'bye, now!'",
+        }
+    },
+    "custom/search": {
+        "format": "",
+        "tooltip": false,
+        "on-click": "bemenu",
+    },
+    "custom/volume": {
+        "exec": "/home/iselda/.scripts/volume.sh percent",
+        "interval": 1,
+        "tooltip": false,
+        "menu": "on-click",
+        "menu-file": "/home/iselda/.config/waybar/volume.xml",
+        "menu-actions": {
+            "speakers": "/home/iselda/.scripts/volume.sh speakers",
+            "headphones": "/home/iselda/.scripts/volume.sh headphones",
+            "mute": "/home/iselda/.scripts/volume.sh mute",
+            "mixer": "pavucontrol",
         }
     }
 }
