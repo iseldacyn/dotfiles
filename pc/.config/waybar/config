@@ -69,10 +69,12 @@
     },
     "temperature": {
         "format": "CPU: {temperatureC}°C",
-        "critical-threshold": 80
+        "critical-threshold": 80,
+        "tooltip": false,
     },
     "memory": {
         "format": "RAM: {used:0.1f}/{total:0.1f} Gb",
+        "tooltip": false,
     },
     "tray": {
         "icon-size": 20

@@ -93,3 +93,9 @@ menu {
     color:      white;
     background: rgba(35, 31, 32, 1);
 }
+
+separator {
+    margin-top: 3px;
+    margin-bottom: 3px;
+    background-color: white;
+}
