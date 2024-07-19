@@ -9,7 +9,7 @@ Currently has:
 
 UPDATE: Nvidia drivers have been updated for wayland, so I now run Hyprland as my main WM.
 
-Update 2: I no longer have xmonad installed because of its size, and difficults emulating hyprland style multi-monitor setup.
+Update 2: I no longer have xmonad installed because of its size, and difficulties emulating hyprland style multi-monitor setup.
 
 ### scripts
 
