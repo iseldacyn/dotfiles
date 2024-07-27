@@ -1,50 +1,66 @@
+-- XMonad functions
 import XMonad
 import XMonad.Util.Run
-import XMonad.Hooks.DynamicLog
-import XMonad.Hooks.EwmhDesktops
-import XMonad.Hooks.FadeInactive
-import XMonad.Hooks.FadeWindows
-import XMonad.Layout.Spacing
 import XMonad.Util.EZConfig
-import XMonad.Actions.NoBorders
-import XMonad.Layout.NoBorders
-import XMonad.Layout.LayoutModifier
+import qualified XMonad.StackSet as W
 
+-- Status bars
+import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.StatusBar
+import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.DynamicIcons
+
+-- Layout
+import XMonad.Layout.Spacing
+import XMonad.Layout.NoBorders
+import XMonad.Layout.LayoutModifier as L
+import XMonad.Layout.Reflect
+import XMonad.Actions.Navigation2D
+import XMonad.Layout.BinarySpacePartition
+import XMonad.Hooks.EwmhDesktops
+
+-- Mutiple screens
+import XMonad.Actions.DynamicWorkspaces
+import XMonad.Layout.IndependentScreens
+import XMonad.Actions.OnScreen
+import XMonad.Actions.Warp
+
+-- General
 import Data.Monoid
+import Control.Monad (liftM2)
 import System.Exit
 import Graphics.X11.ExtraTypes.XF86
-
-import qualified XMonad.StackSet as W
 import qualified Data.Map as M
 
 -- Terminal program
+myTerminal, retroTerm :: String
 myTerminal = "kitty"
 retroTerm = "cool-retro-term --profile iselda"
 
--- Mod button (super)
-myModMask = mod4Mask
-
 -- Border size and color
-myBorderWidth = 2
-myNormalBorderColor = "#000000"
-myFocusedBorderColor = "#FDFD96"
+myBorderWidth :: Dimension
+myBorderWidth = 3
+myNormalBorderColor, myFocusedBorderColor :: String
+myNormalBorderColor = "#4f4f4f"
+myFocusedBorderColor = "#fdfd96"
 
 -- KeyBinds
-myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ 
-		--Launch dmenu
-		[ ((modm, xK_p), spawn "dmenu_run")
+myKeys :: XConfig l -> M.Map (KeyMask, KeySym) (X ())
+myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
+		--Launch bemenu
+		[ ((modm, xK_p), spawn "bemenu")
 
 		-- Brightness Control
 		, ((0, xF86XK_MonBrightnessUp), spawn "lux -a 10%")
 		, ((0, xF86XK_MonBrightnessDown), spawn "lux -s 10%")
 
 		-- Volume Control
-		, ((0, xF86XK_AudioLowerVolume), spawn "/home/iselda/.volume.sh down")
-		, ((0, xF86XK_AudioRaiseVolume), spawn  "/home/iselda/.volume.sh up")
-		, ((0, xF86XK_AudioMute), spawn "/home/iselda/.volume.sh mute")
+		, ((0, xF86XK_AudioLowerVolume), spawn "/home/iselda/.scripts/volume.sh down")
+		, ((0, xF86XK_AudioRaiseVolume), spawn  "/home/iselda/.scripts/volume.sh up")
+		, ((0, xF86XK_AudioMute), spawn "/home/iselda/.scripts/volume.sh mute")
 
 		-- Microphone Control
-		, ((0, xF86XK_AudioMicMute), spawn "/home/iselda/.volume.sh mic_mute")
+		, ((0, xF86XK_AudioMicMute), spawn "/home/iselda/.scripts/volume.sh mic_mute")
 
 		-- PrintScreen
 		, ((0, xK_Print), spawn "maim -s | xclip -selection clipboard -t image/png")
@@ -62,112 +78,130 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 		-- Rotate through layouts
 		, ((modm, xK_space), sendMessage NextLayout)
 
-		-- Reset layouts to default
-		, ((modm .|. shiftMask, xK_space), setLayout $ XMonad.layoutHook conf)
+		-- Move between windows with hjkl
+        , ((modm, xK_h), windowGo L False)
+        , ((modm, xK_j), windowGo D False)
+        , ((modm, xK_k), windowGo U False)
+        , ((modm, xK_l), windowGo R False)
+        -- ...and arrow keys
+        , ((modm, xK_Left), windowGo L False)
+        , ((modm, xK_Down), windowGo D False)
+        , ((modm, xK_Up), windowGo U False)
+        , ((modm, xK_Right), windowGo R False)
 
-		-- Resize windows to correct size
-		, ((modm, xK_n), refresh)
-
-		-- Move to next window
-		, ((modm, xK_j), windows W.focusDown)
-
-		-- Move to previous window
-		, ((modm, xK_k), windows W.focusUp)
-
-		-- Move to master window
-		, ((modm, xK_m), windows W.focusMaster)
-		
-		-- Swap focused and next window
-		, ((modm .|. shiftMask, xK_j), windows W.swapDown)
-
-		-- Swap focused and previous window
-		, ((modm .|. shiftMask, xK_k), windows W.swapUp)
-
-		-- Swap focused and master window
-		, ((modm .|. shiftMask, xK_m), windows W.swapMaster)
+        -- Swap windows with Shift
+        , ((modm .|. shiftMask, xK_h), windowSwap L False)
+        , ((modm .|. shiftMask, xK_j), windowSwap D False)
+        , ((modm .|. shiftMask, xK_k), windowSwap U False)
+        , ((modm .|. shiftMask, xK_l), windowSwap R False)
+        , ((modm .|. shiftMask, xK_Left), windowSwap L False)
+        , ((modm .|. shiftMask, xK_Down), windowSwap D False)
+        , ((modm .|. shiftMask, xK_Up), windowSwap U False)
+        , ((modm .|. shiftMask, xK_Right), windowSwap R False)
 
 		-- Close current window
 		, ((modm .|. shiftMask, xK_c), kill)
 
-		-- Shrink master area
-		, ((modm, xK_h), sendMessage Shrink)
+        -- Toggle window to be floating
+        , ((modm, xK_f), withFocused toggleFloat)
 
-		-- Expand master area
-		, ((modm, xK_l), sendMessage Expand)
+        -- Bgone
+        , ((modm, xK_b), banishScreen LowerRight)
 
-		-- Push windows into tiling
-		, ((modm, xK_t), withFocused $ windows . W.sink)
-
-		-- Increment number of windows
-		, ((modm, xK_comma), sendMessage (IncMasterN 1))
-
-		-- Decrement number of windows
-		, ((modm, xK_period), sendMessage (IncMasterN (-1)))
 		]
 		++
 
 		-- Switch to workspace N
-		-- Movie client to workspace N
+		-- Move client to workspace N
 		[((m .|. modm, k), windows $ f i)
-			| (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
-			, (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
+			| (i, k) <- zip (workspaces conf) [xK_1 .. xK_9]
+			, (f, m) <- [(W.view, 0), (liftM2 (.) W.view W.shift, shiftMask)]]
 		++
 
 		-- Switch to screen N
 		-- Move client to screen N
-		[((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
+		[((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f) >> warpToScreen sc (0.5) (0.5))
 			| (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
-			, (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
+			, (f, m) <- [(W.view, 0), (liftM2 (.) W.view W.shift, shiftMask)]]
 
--- Do not focus using the mouse
+            where toggleFloat w = windows (\s -> if M.member w (W.floating s)
+                                  then W.sink w s
+                                  else (W.float w (W.RationalRect (1/3) (1/4) (1/2) (4/5)) s))
+
+-- App Icons
+myIcons :: Query [String]
+myIcons = composeAll
+  [ className =? "discord" --> appIcon "\xfb6e"
+  , className =? "Discord" --> appIcon "\xf268"
+  , className =? "firefox" --> appIcon "\63288"
+  ]
+
+-- Spawn status bars
+barSpawner :: ScreenId -> IO StatusBarConfig
+barSpawner {-(S s)-} = do
+        pure $ statusBarPropTo ("_XMONAD_LOG_" {-++ show s-})
+            ("xmobar -x " {-++ show s-} ++ " ~/.config/xmonad/xmobarrc" {-++ show s-})
+            (pureiconsPP myIcons $ myPP {-(S s)-})
 
 -- XMobar Configuration
-myBar = "xmobar"
-myPP  = xmobarPP
+myPP :: {-ScreenId ->-} PP
+myPP {-s-} = {-marshallPP s $-} def
 		{ ppCurrent	= xmobarColor "#fcfc5d" "" . wrap "<" ">"	--current workspace
-		, ppVisible	= xmobarColor "#fcfc5d" ""					--visible workspaces
+		, ppVisible	= xmobarColor "#d1d138" "" . wrap "(" ")"	--visible workspaces
 		, ppHidden	= xmobarColor "#adac44" "" . wrap "*" ""	--hidden workspaces
 		, ppHiddenNoWindows = xmobarColor "#6d4d80" ""			--hidden, no windows
 		, ppUrgent	= xmobarColor "#e4ff7a" "" . wrap "!" "!"	--urgent workspace
 		, ppExtras 	= []
-		, ppOrder 	= \(ws:_) -> [ws] 
+		, ppOrder 	= \(ws:_) -> [ws]
 		}
-toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
 
 -- Sets spacing between windows
-mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spacing l a
-mySpacing i = spacingRaw True (Border i i i i) True (Border i i i i) True
+mySpacing :: Integer -> l a -> L.ModifiedLayout Spacing l a
+mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
 
--- Layout of tiles
-myLayoutHook = tiledSpacing ||| fullscreen ||| tiledBorderless
-			where tiledSpacing = {- mySpacing 6 $ -} smartBorders $ Tall 1 (3/100) (1/2);
-				  fullscreen = smartBorders $ Full;
-				  tiledBorderless = noBorders $ Tall 1 (3/100) (1/2)
+-- Binary Tree Partiton + Full Screen layouts
+myLayoutHook = avoidStruts $
+               reflectHoriz $
+               reflectVert $
+               bspSpacing ||| fullscreen
+			where bspSpacing = mySpacing 5 $ smartBorders $ emptyBSP {-Tall 1 (3/100) (1/2)-};
+				  fullscreen = noBorders $ Full;
+
+-- Navigation with spacing
+myNavigation2DConfig = def { defaultTiledNavigation    = sideNavigation }
 
 -- Event handling
-myEventHook =  mempty
+myEventHook :: Event -> X All
+myEventHook = mempty
 
 -- Status Bars and logging
-myLogHook = fadeInactiveLogHook 1.0
+myLogHook = return()
 
 -- Startup Hook
-myStartupHook = return () 
+myStartupHook :: X()
+myStartupHook = return()
 
-main::IO()
+main :: IO()
 main = do
-	xmproc0 <- spawnPipe "xmobar ~/.xmobarrc"
-	xmonad . ewmhFullscreen . ewmh =<< statusBar myBar myPP toggleStrutsKey defaults
-
-defaults = def
-	{ terminal 				= myTerminal
-	, borderWidth			= myBorderWidth
-	, modMask				= myModMask
-	, focusedBorderColor	= myFocusedBorderColor
-	, keys					= myKeys
-	, layoutHook			= myLayoutHook
-	, handleEventHook		= myEventHook
-	, logHook 				= myLogHook
-	, startupHook	 		= myStartupHook
-	, focusFollowsMouse = False
-	, clickJustFocuses = False
-	}
+    nScreens <- countScreens
+    xmonad
+        . ewmhFullscreen
+        . ewmh
+        . withNavigation2DConfig myNavigation2DConfig
+        . dynamicSBs barSpawner
+        . docks
+        $  def
+            { terminal 				= myTerminal
+            , workspaces            = {-withScreens nScreens $-} map show [1..9]
+            , borderWidth			= myBorderWidth
+            , modMask				= mod4Mask
+            , focusedBorderColor	= myFocusedBorderColor
+            , normalBorderColor     = myNormalBorderColor
+            , keys					= myKeys
+            , layoutHook			= myLayoutHook
+            , handleEventHook		= myEventHook
+            , logHook               = myLogHook
+            , startupHook	 		= myStartupHook
+            , focusFollowsMouse     = False
+            , clickJustFocuses      = False
+            }

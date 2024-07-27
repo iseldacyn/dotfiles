@@ -7,14 +7,14 @@
 # /path/to/.volume.sh mic_mute	- mute microphone
 
 # gets volume from pulse-audio
-function get_volume {
-	pactl get-sink-volume @DEFAULT_SINK@ | awk '{print $5}' | head -n 1 | cut -d '%' -f 1
+function volume {
+    pactl get-sink-volume @DEFAULT_SINK@ | grep -Po '\d+(?=%)' | head -n 1
 }
 
 # gets mute status from pulse-audio
 # returns "yes" if unmuted, "" otherwise
-function is_mute {
-	pactl get-sink-mute @DEFAULT_SINK@ | awk '{print $2}' | grep 'yes'
+function is_muted {
+    pactl get-sink-mute @DEFAULT_SINK@ | grep -Po "yes"
 }
 
 # gets microphone mute status from pulse-audio
@@ -28,7 +28,7 @@ function mic_is_mute {
 # bar:		string of "bars" representing volume level
 # uses different icons depending on audio level
 function send_notification {
-	volume=$(get_volume)
+	volume=$(volume)
 	bar=$(seq -s "-" $(($volume / 5)) | sed 's/[0-9]//g')
 	bar+="-"
 	if [ "$volume" -ge 70 ] ; then
@@ -46,10 +46,10 @@ case $1 in
 
 	up)
 		# unmute if muted
-		if [ $(is_mute) = "yes" ] ; then
+		if [ $(is_muted) = "yes" ] ; then
 			pactl set-sink-mute @DEFAULT_SINK@ off
 		# DO NOT go above 100 volume
-		elif [ $(get_volume) -ge 100 ] ; then
+		elif [ $(volume) -ge 100 ] ; then
 			:
 		# unmute, raise volume, display
 		else
@@ -57,25 +57,25 @@ case $1 in
 		fi
 		send_notification
 		;;
-		
+
 	down)
 		# lower volume, display
 		pactl set-sink-volume @DEFAULT_SINK@ -5%
 		# if muted, use muted icon
-		if [ $(is_mute) = "yes" ] && [ "$(get_volume)" -gt 0 ] ; then
-			dunstify -i /home/iselda/Pictures/volume/mute-audio.png -t 3000 -r 2593 -u normal "    -$(seq -s "-" $(($(get_volume) / 5)) | sed 's/[0-9]//g')  $(get_volume)"
-		elif [ $(is_mute) = "yes" ] && [ "$(get_volume)" -eq 0 ] ; then
-			dunstify -i /home/iselda/Pictures/volume/mute-audio.png -t 3000 -r 2593 -u normal "      $(get_volume)"
+		if [ $(is_muted) = "yes" ] && [ "$(volume)" -gt 0 ] ; then
+			dunstify -i /home/iselda/Pictures/volume/mute-audio.png -t 3000 -r 2593 -u normal "    -$(seq -s "-" $(($(volume) / 5)) | sed 's/[0-9]//g')  $(volume)"
+		elif [ $(is_muted) = "yes" ] && [ "$(volume)" -eq 0 ] ; then
+			dunstify -i /home/iselda/Pictures/volume/mute-audio.png -t 3000 -r 2593 -u normal "      $(volume)"
 		else
 			send_notification
 		fi
 		;;
-		
+
 	mute)
 		# toggle mute status
 		pactl set-sink-mute @DEFAULT_SINK@ toggle
 		# if unmuted, show current volume status
-		if [ -z $(is_mute) ] ; then
+		if [ -z $(is_muted) ] ; then
 			send_notification
 		# show audio muted icon
 		else
@@ -94,4 +94,21 @@ case $1 in
 			dunstify -i /home/iselda/Pictures/volume/mute-mic.png -t 3000 -r 2594 -u normal ""
 		fi
 		;;
+
+    percent)
+        if [ $(is_muted) = "yes" ] ; then
+            echo ""
+        else
+            volume=$(volume)
+            if [ "$volume" -ge 30 ] ; then
+                echo " $volume%"
+            else
+                echo " $volume%"
+            fi
+        fi
+        ;;
+
+    mute_no_notif)
+        pactl set-sink-mute @DEFAULT_SINK@ toggle
+        ;;
 esac

@@ -1,11 +1,11 @@
 Config {
 
 	-- appearance
-	  font			= "Maple Mono"
+	  font			= "JetBrainsMono NFP"
 	--, bgColor		= "#260d36"
 	, bgColor		= "#000000"
 	, fgColor		= "#ffffff"
-	, position		= TopH 30
+	, position		= TopH 20
 	, border		= BottomB
 	--, borderColor	= "#245d16"
 	, borderColor	= "#000000"
@@ -13,7 +13,7 @@ Config {
 	-- layout
 	, sepChar 		= "%"
 	, alignSep		= "}{"
-	, template 		= "%StdinReader% | %k10temp% | %memory% }{ %wlo1wi% | %battery% | %date% "
+	, template 		= "%_XMONAD_LOG_% | %multicoretemp% | %memory% }{ %wlo1wi% | %battery% | %date% "
 
 	-- general behavior
 	, lowerOnStart	= False
@@ -23,16 +23,15 @@ Config {
 
 	--plugins
 	, commands =
-		[ Run StdinReader
+		[ Run XPropertyLog  "_XMONAD_LOG_"
 
-		, Run K10Temp		"0000:00:18.3"
-							[ "-t"			, "CPUTemp:<Tctl>°C"
-							, "--Low"		, "70"
-							, "--High"		, "80"
-							, "--low"		, "#65f7eb"
-							, "--normal"	, "#e8c227"
-							, "--high"		, "red"
-							] 50
+		, Run MultiCoreTemp		[ "-t"			, "CPUTemp:<avg>°C"
+								, "--Low"		, "70"
+								, "--High"		, "80"
+								, "--low"		, "#65f7eb"
+								, "--normal"	, "#e8c227"
+								, "--high"		, "red"
+								] 50
 
 		, Run Memory		[ "-t"			, "Memory:<used>Mb"
 							, "--Low"		, "6400"
@@ -50,7 +49,7 @@ Config {
 								, "--high"	, "green"
 								] 50
 
-		, Run BatteryP 		["BATT"] 
+		, Run BatteryP 		["BATT"]
 							[ "--template"	, "<acstatus>"
 							, "--Low"		, "20"		-- units: %
 							, "--High"		, "80"		-- units: %
@@ -60,12 +59,10 @@ Config {
 							, "--"
 								, "-o"		, "Battery:<left>% (<timeleft>)"
 								, "-O"		, "<fc=#fdfd96>Batt:<left>% (<timeleft>)</fc>"
-								, "-a"		, "dunstify -i /home/iselda/Pictures/volume/low-battery.png -r 2595 -u critical 'LOW BATTERY: Please plug in charger!'"
-								, "-A"		, "20"
-							] 100
+							] 10
 
 		, Run Date			"%F (%a) %T" "date" 10
-		
+
 		]
 }
 

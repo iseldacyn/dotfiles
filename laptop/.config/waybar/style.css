@@ -1,0 +1,101 @@
+* {
+    border:         none;
+    border-radius:  0;
+    font-family:    JetBrainsMono NFP;
+    font-size:      20px;
+    box-shadow:     none;
+    text-shadow:    none;
+    transition-duration: 0s;
+}
+
+window {
+    color:      rgba(217, 216, 216, 1);
+    background: rgba(0,0,0,.3);
+}
+
+window#waybar.solo {
+    color:      rgba(217, 216, 216, 1);
+}
+
+#workspaces {
+    margin: 0 5px;
+}
+
+#workspaces button {
+    padding:    0 5px;
+    color:      rgba(203, 195, 277, 0.8);
+}
+
+#workspaces button.visible {
+    color: rgba(245, 216, 122, 1);
+}
+
+#workspaces button.active {
+    border-bottom: 2px solid rgba(245, 216, 122, 1);
+}
+
+#workspaces button.urgent {
+    color: rgba(255, 127, 127, 0.4);
+}
+
+#workspaces button.urgent:hover {
+    background:     rgba(35, 31, 32, 0.00);
+    border:         none;
+    border-radius:  0;
+    border-bottom:  2px solid rgba(255, 127, 127, 1);
+    color:          rgba(255, 127, 127, 1);
+}
+
+#workspaces button:hover {
+    background:     rgba(35, 31, 32, 0.00);
+    border:         none;
+    border-radius:  0;
+    border-bottom:  2px solid rgba(203, 195, 277, 1);
+    color:          rgba(203, 195, 277, 1);
+}
+
+#memory, #network, #custom-volume, #pulseaudio, #temperature, #custom-power, #custom-search, #tray, #window {
+    margin:     0px 15px 0px 15px;
+    min-width:  25px;
+}
+
+#pulseaudio, #custom-volume {
+    color: lightgreen;
+}
+
+#network {
+    color: darkorange;
+}
+
+#temperature {
+    color: deepskyblue;
+}
+
+#memory {
+    color: salmon;
+}
+
+#custom-search {
+    font-size: 21px;
+}
+
+#clock {
+    color:      pink;
+    margin:     0px 16px 0px 10px;
+    min-width:  140px;
+}
+
+#tray menu {
+    background: rgba(35, 31, 32, 1);
+}
+
+menu {
+    color:      white;
+    background: rgba(35, 31, 32, 1);
+}
+
+separator {
+    margin-top: 3px;
+    margin-bottom: 3px;
+    background-color: white;
+}
