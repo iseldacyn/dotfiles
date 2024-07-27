@@ -13,7 +13,7 @@ Config {
 	-- layout
 	, sepChar 		= "%"
 	, alignSep		= "}{"
-	, template 		= "%_XMONAD_LOG_% | %multicoretemp% | %memory% }{ %wlo1wi% | %battery% | %date% "
+	, template 		= "%XMonadLog% | %multicoretemp% | %memory% }{ %wlo1wi% | %battery% | %date% "
 
 	-- general behavior
 	, lowerOnStart	= False
@@ -23,7 +23,7 @@ Config {
 
 	--plugins
 	, commands =
-		[ Run XPropertyLog  "_XMONAD_LOG_"
+		[ Run XMonadLog
 
 		, Run MultiCoreTemp		[ "-t"			, "CPUTemp:<avg>°C"
 								, "--Low"		, "70"

@@ -24,7 +24,6 @@ import XMonad.Actions.DynamicWorkspaces
 import XMonad.Layout.IndependentScreens
 import XMonad.Actions.OnScreen
 import XMonad.Actions.Warp
-
 -- General
 import Data.Monoid
 import Control.Monad (liftM2)
@@ -69,7 +68,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 		, ((modm, xK_q), spawn "xmonad --recompile; xmonad --restart")
 
 		-- Lock screen
-		, ((modm .|. shiftMask, xK_l), spawn "i3lock -S 0 -c 000000 -k --time-color=ffffff --date-color=999999 --ring-color=d3b3ff --keyhl-color=f5f67e --bshl-color=e1ffc7  --insidever-color=ffc7ef --ringver-color=ffc7ef --insidewrong-color=ff9690 --ringwrong-color=ff9690 --indicator -e -f")
+		, ((modm .|. shiftMask, xK_t), spawn "i3lock -S 0 -c 000000 -k --time-color=ffffff --date-color=999999 --ring-color=d3b3ff --keyhl-color=f5f67e --bshl-color=e1ffc7  --insidever-color=ffc7ef --ringver-color=ffc7ef --insidewrong-color=ff9690 --ringwrong-color=ff9690 --indicator -e -f")
 
 		-- Start new terminal
 		--, ((modm, xK_Return), spawn retroTerm)
@@ -137,15 +136,14 @@ myIcons = composeAll
   ]
 
 -- Spawn status bars
-barSpawner :: ScreenId -> IO StatusBarConfig
-barSpawner {-(S s)-} = do
-        pure $ statusBarPropTo ("_XMONAD_LOG_" {-++ show s-})
-            ("xmobar -x " {-++ show s-} ++ " ~/.config/xmonad/xmobarrc" {-++ show s-})
-            (pureiconsPP myIcons $ myPP {-(S s)-})
+barSpawner :: StatusBarConfig
+barSpawner = do
+        statusBarProp "xmobar ~/.config/xmonad/xmobarrc"
+            (iconsPP myIcons $ myPP)
 
 -- XMobar Configuration
-myPP :: {-ScreenId ->-} PP
-myPP {-s-} = {-marshallPP s $-} def
+myPP :: PP
+myPP = def
 		{ ppCurrent	= xmobarColor "#fcfc5d" "" . wrap "<" ">"	--current workspace
 		, ppVisible	= xmobarColor "#d1d138" "" . wrap "(" ")"	--visible workspaces
 		, ppHidden	= xmobarColor "#adac44" "" . wrap "*" ""	--hidden workspaces
@@ -188,7 +186,7 @@ main = do
         . ewmhFullscreen
         . ewmh
         . withNavigation2DConfig myNavigation2DConfig
-        . dynamicSBs barSpawner
+        . withSB barSpawner
         . docks
         $  def
             { terminal 				= myTerminal
