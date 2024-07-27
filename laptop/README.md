@@ -8,5 +8,9 @@ Battery notification daemon I created that gets battery from linux file and prin
 
 ### xmonad/xmobar
 
-Lacks many features found in my current pc setup which I need to implement.
-But, mostly works and displays everything as it should.
+Updated with most features on my desktop. Switched to hyprland as main WM for the time being.
+
+### Hyprland/waybar
+
+Mostly the same as my current desktop setup.
+Updated for my laptop-specific functions, scripts, etc.
