@@ -111,4 +111,20 @@ case $1 in
     mute_no_notif)
         pactl set-sink-mute @DEFAULT_SINK@ toggle
         ;;
+
+	up_no_notif_1)
+		if [ $(volume) -ge 100 ] ; then
+			:
+        else
+            pactl set-sink-volume @DEFAULT_SINK@ +1%
+        fi
+		;;
+	up_no_notif_5)
+        if [ "$(volume)" -ge 96 ] ; then
+            pactl set-sink-volume @DEFAULT_SINK@ +"$((100-$(volume)))"%
+        else
+            pactl set-sink-volume @DEFAULT_SINK@ +5%
+        fi
+		;;
+
 esac

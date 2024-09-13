@@ -5,7 +5,7 @@
 
     "modules-left": ["custom/power", "custom/search", "hyprland/window", "hyprland/submap"],
     "modules-center": ["hyprland/workspaces"],
-    "modules-right": ["temperature", "memory", "custom/volume", "network", "clock", "tray"],
+    "modules-right": ["temperature", "memory", "custom/voldown", "custom/volume", "custom/volup", "network", "clock", "tray"],
     "hyprland/submode": {
         "format": " {}"
     },
@@ -107,5 +107,17 @@
             "mute": "/home/iselda/.scripts/volume.sh mute_no_notif",
             "mixer": "pavucontrol",
         }
+    },
+    "custom/volup": {
+        "format": "+",
+        "tooltip": false,
+        "on-click": "/home/iselda/.scripts/volume.sh up_no_notif_5",
+        "on-click-right": "/home/iselda/.scripts/volume.sh up_no_notif_1",
+    },
+    "custom/voldown": {
+        "format": "-",
+        "tooltip": false,
+        "on-click": "pactl set-sink-volume @DEFAULT_SINK@ -5%",
+        "on-click-right": "pactl set-sink-volume @DEFAULT_SINK@ -1%",
     }
 }
