@@ -99,7 +99,6 @@
     },
     "custom/volume": {
         "exec": "/home/iselda/.scripts/volume.sh percent",
-        "interval": 1,
         "tooltip": false,
         "menu": "on-click",
         "menu-file": "/home/iselda/.config/waybar/volume.xml",
@@ -113,8 +112,8 @@
     "custom/volup": {
         "format": "+",
         "tooltip": false,
-        "on-click": "/home/iselda/.scripts/volume.sh up_no_notif_5",
-        "on-click-right": "/home/iselda/.scripts/volume.sh up_no_notif_1",
+        "on-click": "/home/iselda/.scripts/volume.sh up_5",
+        "on-click-right": "/home/iselda/.scripts/volume.sh up_1",
     },
     "custom/voldown": {
         "format": "-",
