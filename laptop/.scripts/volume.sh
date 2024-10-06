@@ -44,6 +44,7 @@ function send_notification {
 
 case $1 in
 
+    # raise volume hotkey
 	up)
 		# unmute if muted
 		if [ $(is_muted) = "yes" ] ; then
@@ -58,6 +59,7 @@ case $1 in
 		send_notification
 		;;
 
+    # raise volume hotkey
 	down)
 		# lower volume, display
 		pactl set-sink-volume @DEFAULT_SINK@ -5%
@@ -71,6 +73,7 @@ case $1 in
 		fi
 		;;
 
+    # mute volume hotkey
 	mute)
 		# toggle mute status
 		pactl set-sink-mute @DEFAULT_SINK@ toggle
@@ -83,6 +86,7 @@ case $1 in
 		fi
 		;;
 
+    # mute mic hotkey
 	mic_mute)
 		# toggle microphone mute status
 		pactl set-source-mute @DEFAULT_SOURCE@ toggle
@@ -95,24 +99,54 @@ case $1 in
 		fi
 		;;
 
+    # real-time update of percentage
     percent)
-        if [ $(is_muted) = "yes" ] ; then
+        # only want to print each command once
+        volume_old=$(volume)
+        muted_prev="n"
+        # initial print of volume
+        if [ "$(is_muted)" = "yes" ] ; then
             echo ""
+            muted_prev="y"
+        elif [ "$volume_old" -ge 30 ] ; then
+            echo " $volume_old%"
         else
-            volume=$(volume)
-            if [ "$volume" -ge 30 ] ; then
-                echo " $volume%"
-            else
-                echo " $volume%"
-            fi
+            echo " $volume_old%"
         fi
+        while :
+        do
+            volume=$(volume)
+            # only print muted volume once
+            if [ "$(is_muted)" = "yes" ] && [ "$muted_prev" = "n" ] ; then
+                echo ""
+                muted_prev="y"
+            # only print when updated volume OR when volume is unmuted
+            elif [ "$volume" -eq "$volume_old" ] && [ "$muted_prev" = "n" ] ;  then
+                :
+            elif [ "$volume" -ge 30 ] || [ "$muted_prev" = "y" ] ; then
+                # only print when not muted
+                if [ -z "$(is_muted)" ] ; then
+                    echo " $volume%"
+                    volume_old=$volume
+                    muted_prev="n"
+                fi
+            elif [ "$volume" -lt 31 ] || [ "$muted_prev" = "y"  ] ; then
+                # only print when not muted
+                if [ -z "$(is_muted)" ] ; then
+                    echo " $volume%"
+                    volume_old=$volume
+                    muted_prev="n"
+                fi
+            fi
+        done
         ;;
 
+    # utilities for waybar
     mute_no_notif)
         pactl set-sink-mute @DEFAULT_SINK@ toggle
         ;;
-
 	up_no_notif_1)
+        # do NOT go above 100% volume
 		if [ $(volume) -ge 100 ] ; then
 			:
         else
@@ -120,6 +154,7 @@ case $1 in
         fi
 		;;
 	up_no_notif_5)
+        # do NOT go above 100% volume
         if [ "$(volume)" -ge 96 ] ; then
             pactl set-sink-volume @DEFAULT_SINK@ +"$((100-$(volume)))"%
         else
