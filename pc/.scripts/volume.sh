@@ -11,25 +11,34 @@ function is_muted {
 case $1 in
     "percent")
         volume_old=$(volume)
-        if [ "$volume_old" -ge 30 ] ; then
+        muted_prev="n"
+        if [ "$(is_muted)" = "yes" ] && [ "$muted_prev" = "n" ] ; then
+            echo ""
+            muted_prev="y"
+        elif [ "$volume_old" -ge 30 ] ; then
             echo " $volume_old%"
         else
             echo " $volume_old%"
         fi
         while :
         do
-            if [ "$(is_muted)" = "yes" ] ; then
+            volume=$(volume)
+            if [ "$(is_muted)" = "yes" ] && [ "$muted_prev" = "n" ] ; then
                 echo ""
-            else
-                volume=$(volume)
-                if [ "$volume" -eq "$volume_old" ] ; then
-                    :
-                elif [ "$volume" -ge 30 ] ; then
+                muted_prev="y"
+            elif [ "$volume" -eq "$volume_old" ] && [ "$muted_prev" = "n" ] ;  then
+                :
+            elif [ "$volume" -ge 30 ] || [ "$muted_prev" = "y" ] ; then
+                if [ -z "$(is_muted)" ] ; then
                     echo " $volume%"
                     volume_old=$volume
-                else
+                    muted_prev="n"
+                fi
+            elif [ "$volume" -lt 31 ] || [ "$muted_prev" = "y"  ] ; then
+                if [ -z "$(is_muted)" ] ; then
                     echo " $volume%"
                     volume_old=$volume
+                    muted_prev="n"
                 fi
             fi
         done
