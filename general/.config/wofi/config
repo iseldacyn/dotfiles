@@ -1,0 +1,8 @@
+show=drun
+prompt=
+orientation=vertical
+insensitive=true
+dynamic_lines=true
+allow_images=true
+display_generic=true
+sort_order=default

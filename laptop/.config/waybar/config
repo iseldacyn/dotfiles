@@ -95,11 +95,10 @@
     "custom/search": {
         "format": "",
         "tooltip": false,
-        "on-click": "bemenu",
+        "on-click": "wofi",
     },
     "custom/volume": {
         "exec": "/home/iselda/.scripts/volume.sh percent",
-        "interval": 1,
         "tooltip": false,
         "menu": "on-click",
         "menu-file": "/home/iselda/.config/waybar/volume.xml",

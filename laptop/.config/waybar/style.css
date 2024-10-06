@@ -62,7 +62,6 @@ window#waybar.solo {
 #pulseaudio, #custom-volume, #custom-volup, #custom-voldown {
     color: lightgreen;
 }
-
 #custom-volume {
     margin: 0px 0px 0px 0px;
 }
