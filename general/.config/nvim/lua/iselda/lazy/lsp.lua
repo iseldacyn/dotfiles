@@ -34,7 +34,6 @@ return {
                 "jdtls",
                 "ruby_lsp",
                 "pylsp",
-                "hls",
                 "ltex",
                 "sqlls",
             },

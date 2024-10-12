@@ -46,5 +46,7 @@ vim.keymap.set("n", "<leader><leader>", function()
 end)
 
 -- compile latex files
-vim.keymap.set("n", "<leader>ll", "<cmd>!latexmk -pdf %<CR>", { silent = true })
+vim.keymap.set("n", "<leader>ll", "<cmd>!latexmk -pdf %<CR><cmd>!latexmk -c<CR>", { silent = true })
 vim.keymap.set("n", "<leader>lc", "<cmd>!latexmk -c<CR>", { silent = true })
+-- latex also
+vim.keymap.set("n", "<leader>lp", "_yt}o<Esc>p_lcwend<Esc>A}<Esc>O<Esc>O<CR>")
