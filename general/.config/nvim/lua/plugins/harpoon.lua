@@ -4,7 +4,8 @@ return {
 
     dependencies = { 
         "nvim-lua/plenary.nvim",
-        "nvim-telescope/telescope.nvim"
+        "nvim-telescope/telescope.nvim",
+        "mike-jl/harpoonEx",
     },
 
     config = function ()
@@ -30,8 +31,24 @@ return {
         end
 
         vim.keymap.set("n", "<leader>a", function() harpoon:list():add() end)
-        vim.keymap.set("n", "<C-e>", function() toggle_telescope(harpoon:list()) end,
-            { desc = "Open harpoon window" })
 
+        local harpoonEx = require('harpoonEx')
+        vim.keymap.set("n", "<leader>sh", function()
+            harpoonEx.telescope_live_grep(harpoon:list())
+        end, { desc = "Live grep harpoon files" })
+
+        vim.keymap.set("n", "<C-e>", function()
+            require("telescope").extensions.harpoonEx.harpoonEx({
+                -- Optional: modify mappings, default mappings:
+                attach_mappings = function(_, map)
+                    local actions = require("telescope").extensions.harpoonEx.actions
+                    map({ "i", "n" }, "<C-d>", actions.delete_mark)
+                    map({ "i", "n" }, "<C-k>", actions.move_mark_up)
+                    map({ "i", "n" }, "<C-j>", actions.move_mark_down)
+                    return true
+                end,
+            })
+            return true
+        end, { desc = "Open harpoon window" })
     end
 }
