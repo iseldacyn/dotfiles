@@ -45,3 +45,12 @@ vim.keymap.set("n", "<leader>lc", "<cmd>!latexmk -c<CR>", { silent = true })
 
 -- create latex begin blocks
 vim.keymap.set("n", "<leader>lp", "_yt}o<Esc>p_lcwend<Esc>A}<Esc>O<Esc>O<CR>")
+
+-- disable lsp stuff
+local diagnosticsVisible = true
+vim.keymap.set("n", "<leader>ld", function()
+    diagnosticsVisible = not diagnosticsVisible
+    vim.diagnostic.config({
+        virtual_text = diagnosticsVisible,
+        underline = diagnosticsVisible
+    }) end)

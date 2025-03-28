@@ -105,7 +105,7 @@ return {
                 ['<C-j>'] = cmp.mapping.select_next_item(select_opts),
                 ['<C-Enter>'] = cmp.mapping.confirm({select = true}),
                 ['<C-Space>'] = cmp.mapping.complete(),
-                ['<Tab>'] = cmp.mapping(function(fallback)
+                ['<C-Tab>'] = cmp.mapping(function(fallback)
                     local col = vim.fn.col('.') - 1
 
                     if cmp.visible() then
