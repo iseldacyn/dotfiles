@@ -1,11 +1,5 @@
 #!/bin/bash
 
-# usage:
-# /path/to/.volume.sh up		- raise volume
-# /path/to/.volume.sh down		- lower volume
-# /path/to/.volume.sh mute		- mute volume
-# /path/to/.volume.sh mic_mute	- mute microphone
-
 # gets volume from pulse-audio
 function volume {
     pactl get-sink-volume @DEFAULT_SINK@ | grep -Po '\d+(?=%)' | head -n 1
@@ -47,10 +41,10 @@ case $1 in
     # raise volume hotkey
 	up)
 		# unmute if muted
-		if [ $(is_muted) = "yes" ] ; then
+		if [ "$(is_muted)" = "yes" ] ; then
 			pactl set-sink-mute @DEFAULT_SINK@ off
 		# DO NOT go above 100 volume
-		elif [ $(volume) -ge 100 ] ; then
+		elif [ "$(volume)" -ge 100 ] ; then
 			:
 		# unmute, raise volume, display
 		else
@@ -64,9 +58,9 @@ case $1 in
 		# lower volume, display
 		pactl set-sink-volume @DEFAULT_SINK@ -5%
 		# if muted, use muted icon
-		if [ $(is_muted) = "yes" ] && [ "$(volume)" -gt 0 ] ; then
+		if [ "$(is_muted)" = "yes" ] && [ "$(volume)" -gt 0 ] ; then
 			dunstify -i /home/iselda/Pictures/volume/mute-audio.png -t 3000 -r 2593 -u normal "    -$(seq -s "-" $(($(volume) / 5)) | sed 's/[0-9]//g')  $(volume)"
-		elif [ $(is_muted) = "yes" ] && [ "$(volume)" -eq 0 ] ; then
+		elif [ "$(is_muted)" = "yes" ] && [ "$(volume)" -eq 0 ] ; then
 			dunstify -i /home/iselda/Pictures/volume/mute-audio.png -t 3000 -r 2593 -u normal "      $(volume)"
 		else
 			send_notification
@@ -78,7 +72,7 @@ case $1 in
 		# toggle mute status
 		pactl set-sink-mute @DEFAULT_SINK@ toggle
 		# if unmuted, show current volume status
-		if [ -z $(is_muted) ] ; then
+		if [ -z "$(is_muted)" ] ; then
 			send_notification
 		# show audio muted icon
 		else
@@ -91,7 +85,7 @@ case $1 in
 		# toggle microphone mute status
 		pactl set-source-mute @DEFAULT_SOURCE@ toggle
 		# if unmuted, show microphone on icon
-		if [ -z $(mic_is_mute) ] ; then
+		if [ -z "$(mic_is_mute)" ] ; then
 			dunstify -i /home/iselda/Pictures/volume/play-mic.png -t 3000 -r 2594 -u normal ""
 		# show microphone muted icon
 		else
@@ -147,7 +141,7 @@ case $1 in
         ;;
 	up_no_notif_1)
         # do NOT go above 100% volume
-		if [ $(volume) -ge 100 ] ; then
+		if [ "$(volume)" -ge 100 ] ; then
 			:
         else
             pactl set-sink-volume @DEFAULT_SINK@ +1%
@@ -161,5 +155,14 @@ case $1 in
             pactl set-sink-volume @DEFAULT_SINK@ +5%
         fi
 		;;
+
+    # FOR PC USE
+    # switch output device
+    "speakers")
+        pactl set-default-sink alsa_output.usb-Razer_Razer_Nommo_Chroma-02.analog-stereo
+        ;;
+    "headphones")
+        pactl set-default-sink alsa_output.usb-Jieli_Technology_UACDemoV1.0_1120022606020701-01.analog-stereo
+        ;;
 
 esac
