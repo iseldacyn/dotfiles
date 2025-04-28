@@ -23,7 +23,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
 -- Create an event handler for the FileType autocommand
 vim.api.nvim_create_autocmd('FileType', {
-    -- This handler will fire when the buffer's 'filetype' is "python"
+    -- This handler will fire when the buffer's 'filetype' is "verilog"
     pattern = {'verilog', 'systemverilog'},
     callback = function()
         vim.lsp.start({

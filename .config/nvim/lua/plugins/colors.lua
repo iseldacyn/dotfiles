@@ -1,7 +1,7 @@
 function colorSelector(color)
     -- replace with desired colorscheme
-    color = color or "onelight"
-    vim.o.background = "light"
+    color = color or "everforest"
+    vim.o.background = "dark"
     vim.cmd.colorscheme(color)
 end
 
@@ -40,7 +40,7 @@ return {
         config = function()
             require('onedarkpro').setup({
                 options = {
-                    transparency = false,
+                    transparency = true,
                 },
                 colors = {
                     onelight = { bg = "#fafafa" },
@@ -48,6 +48,19 @@ return {
             })
 
             vim.cmd("colorscheme onedark")
+
+            colorSelector()
+        end
+    },
+
+    {
+        "neanias/everforest-nvim",
+
+        config = function()
+            require('everforest').setup({
+            })
+
+            vim.cmd("colorscheme everforest")
 
             colorSelector()
         end
