@@ -9,5 +9,23 @@ if [ -e $HOME/.bash_aliases ]; then
 	source $HOME/.bash_aliases
 fi
 
-PS1="[\u@\h \W]$ "
-export PS1="\[\e[1;32m\]\[\e[1;35m\]\u\[\e[0;36m\]@\[\e[1;35m\]\h \[\e[1;36m\]\W$(__git_ps1 " (%s)")\[\e[0;32m\] > \[\e[m\]"
+#color codes
+normal="\e[0m"
+black="\e[30m"
+red="\e[31m"
+green="\e[32m"
+yellow="\e[33m"
+blue="\e[34m"
+magenta="\e[35m"
+cyan="\e[36m"
+lightgray="\e[37m"
+gray="\e[90m"
+lightred="\e[91m"
+lightgreen="\e[92m"
+lightyellow="\e[93m"
+lightblue="\e[94m"
+lightmagenta="\e[95m"
+lightcyan="\e[96m"
+white="\e[97m"
+
+export PS1="${magenta}\u${cyan}@${magenta}\h ${cyan}\W ${red} <(arf bark woof!)${green}\n    --> ${normal}"
