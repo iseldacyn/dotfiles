@@ -54,3 +54,12 @@ vim.keymap.set("n", "<leader>ld", function()
         virtual_text = diagnosticsVisible,
         underline = diagnosticsVisible
     }) end)
+local formatOnSave = true
+vim.keymap.set("n", "<leader>tf", function()
+    formatOnSave = not formatOnSave
+    vim.g.autoformat = formatOnSave
+end
+)
+
+-- metals
+vim.keymap.set("n", "<leader>mls", "<cmd>lua require'telescope'.extensions.metals.commands()<CR>")
