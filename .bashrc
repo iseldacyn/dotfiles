@@ -28,4 +28,4 @@ lightmagenta="\[\e[95m"
 lightcyan="\[\e[96m"
 white="\[\e[97m"
 
-export PS1="${magenta}\u${cyan}@${magenta}\h ${cyan}\W ${yellow} <(arf bark woof!)${green}\n    --> ${normal}"
+export PS1="${magenta}\u${cyan}@${magenta}\h ${cyan}\W ${yellow} <(arf bark woof!)\n    ${green}--> ${normal}"
