@@ -9,11 +9,6 @@ if [ -e $HOME/.bash_aliases ]; then
 	source $HOME/.bash_aliases
 fi
 
-export work=/home/iselda/work/mission-power
-export apps=/home/iselda/other/applications
-export EFINITY_ROOT=/home/iselda/work/mission-power/efinity/2024.2/
-export PATH=$PATH:/home/iselda/.local/share/coursier/bin
-
 # color codes
 black='\[$(tput setaf 0)\]'
 red='\[$(tput setaf 1)\]'
