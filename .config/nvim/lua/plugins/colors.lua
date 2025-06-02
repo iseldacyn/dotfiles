@@ -1,6 +1,6 @@
 function colorSelector(color)
     -- replace with desired colorscheme
-    color = color or "everforest"
+    color = color or "duskfox"
     vim.o.background = "dark"
     vim.cmd.colorscheme(color)
 end
@@ -63,6 +63,32 @@ return {
             vim.cmd("colorscheme everforest")
 
             colorSelector()
+        end
+    },
+
+    {
+        "catppuccin/nvim",
+
+        config = function()
+            require('catppuccin').setup({
+                flavour = "mocha"
+            })
+        end
+    },
+
+    {
+        "EdenEast/nightfox.nvim",
+
+        config = function()
+            require('nightfox').setup({
+                options = {
+                    styles = {
+                    comments = "italic",
+                    keywords = "bold",
+                    types = "italic,bold",
+                    }
+                }
+            })
         end
     },
 }
