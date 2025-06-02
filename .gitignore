@@ -1,0 +1,3 @@
+# nvim local files
+/.config/nvim/lazy-lock.json
+/.config/nvim/undodir
