@@ -35,3 +35,5 @@ vim.g.netrw_banner = 0
 vim.g.netrw_winsize = 25
 
 vim.lsp.set_log_level("off")
+
+vim.g.python3_host_prog = "~/.cache/nvim/python3/venv/bin/python3"
